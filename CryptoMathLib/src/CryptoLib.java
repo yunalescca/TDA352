@@ -3,6 +3,9 @@
 // Running:
 //   java CryptoLibTest
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class CryptoLib {
 
 	/**
@@ -13,13 +16,39 @@ public class CryptoLib {
 	public static int[] EEA(int a, int b) {
 		// Note: as you can see in the test suite,
 		// your function should work for any (positive) value of a and b.
-		int gcd = -1;
-		int s = -1;
-		int t = -1;
+		int s = 0;
+		int t = 1;
+		int r = b;
+		int old_s = 1;
+		int old_t = 0;
+		int old_r = a;
 		int[] result = new int[3];
-		result[0] = gcd;
-		result[1] = s;
-		result[2] = t;
+
+		if (a != b) {
+			while (r != 0) {
+				int quotient = old_r / r;
+				int temp = old_r;
+				old_r = r;
+				r = temp - quotient * r;
+
+				temp = old_s;
+				old_s = s;
+				s = temp - quotient * s;
+
+				temp = old_t;
+				old_t = t;
+				t = temp - quotient * t;
+			}
+
+			result[0] = old_r; // GCD
+			result[1] = old_s;
+			result[2] = old_t;
+		} else {
+			result[0] = a; // GCD
+			result[1] = 1; // s
+			result[2] = 0; // t
+ 		}
+
 		return result;
 	}
 
@@ -27,7 +56,19 @@ public class CryptoLib {
 	 * Returns Euler's Totient for value "n".
 	 **/
 	public static int EulerPhi(int n) {
-		return -1;
+		if (n < 1) {
+			return 0;
+		}
+
+		int counts = 0;
+		for(int i = 1; i < n; i++) {
+			int gcd = EEA(i,n)[0];
+			if (gcd == 1) {
+				counts++;
+			}
+		}
+
+		return counts;
 	}
 
 	/**
@@ -35,7 +76,12 @@ public class CryptoLib {
 	 * modular inverse does not exist.
 	 **/
 	public static int ModInv(int n, int m) {
-		return -1;
+		int[] res = EEA(Math.floorMod(n, m), m);
+		if (res[0] == 1) {
+			return Math.floorMod(res[1], m);
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -43,7 +89,14 @@ public class CryptoLib {
 	 * Fermat Witness. Tests values from 2 (inclusive) to "n/3" (exclusive).
 	 **/
 	public static int FermatPT(int n) {
-		return -1;
+		for (int i = 2; i < n/3; i++) {
+			BigInteger pow = new BigInteger("" + i).pow(n-1);
+			BigInteger res = pow.mod(new BigInteger("" + n));
+			if (!res.equals(new BigInteger("1"))) {
+				return i;
+			}
+		}
+		return 0;
 	}
 
 	/**
@@ -53,7 +106,18 @@ public class CryptoLib {
 	 * different output values the hash function can produce.
 	 **/
 	public static double HashCP(double n_samples, double size) {
-		return -1;
-	}
 
+		BigDecimal num = BigDecimal.ONE;
+		for (long i = (long) size; i > 0; i--) {
+			num = num.multiply(BigDecimal.valueOf(i));
+		}
+
+		BigDecimal denom = BigDecimal.ONE;
+		for (long i = (long) (size - n_samples); i > 0; i--) {
+			denom = denom.multiply(BigDecimal.valueOf(i));
+		}
+		denom = denom.multiply(BigDecimal.valueOf((int) size).pow((int) n_samples));
+
+		return 1 - (num.divide(denom, 10, BigDecimal.ROUND_CEILING)).doubleValue();
+	}
 }
