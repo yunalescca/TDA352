@@ -14,6 +14,11 @@ public class FiatShamir {
             this.c = c;
             this.s = s;
         }
+
+        @Override
+        public String toString(){
+            return "R: " + this.R + "\nc: " + this.c + "\ns: " + this.s;
+        }
     }
 
     public static void main(String[] args) {
@@ -32,6 +37,7 @@ public class FiatShamir {
                         new BigInteger(elem[0].split("=")[1]),
                         Integer.parseInt(elem[1].split("=")[1]),
                         new BigInteger(elem[2].split("=")[1]));
+                System.out.println(runs[i] + "\n");
             }
             br.close();
         } catch (Exception err) {
@@ -61,7 +67,18 @@ public class FiatShamir {
      */
     private static BigInteger recoverSecret(BigInteger N, BigInteger X,
                                             ProtocolRun[] runs) {
-        // TODO. Recover the secret value x such that x^2 = X (mod N).
+        for(int i = 0; i < runs.length - 1; i++) {
+            for(int j = i + 1; j < runs.length; j++) {
+                if (runs[i].R.equals(runs[j].R)
+                    && runs[i].c != runs[j].c) {
+
+                    BigInteger r = runs[i].c == 0 ? runs[i].s : runs[j].s;
+                    BigInteger s = runs[i].c == 1 ? runs[i].s : runs[j].s;
+                    BigInteger x = r.modInverse(N).multiply(s).mod(N);
+                    return x;
+                }
+            }
+        }
         return BigInteger.ZERO;
     }
 }
