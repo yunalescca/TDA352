@@ -1,7 +1,7 @@
-// Compilation (CryptoLibTest contains the main-method):
-//   javac CryptoLibTest.java
+package CryptoMathLib;// Compilation (CryptoMathLib.CryptoLibTest contains the main-method):
+//   javac CryptoMathLib.CryptoLibTest.java
 // Running:
-//   java CryptoLibTest
+//   java CryptoMathLib.CryptoLibTest
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
