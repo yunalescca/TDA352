@@ -1,7 +1,6 @@
-package CryptoMathLib;// Compilation:
-//   javac CryptoMathLib.CryptoLibTest.java
+//   javac CryptoLibTest.java
 // Running:
-//   java CryptoMathLib.CryptoLibTest
+//   java CryptoLibTest
 
 public class CryptoLibTest {
 
