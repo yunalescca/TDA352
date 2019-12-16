@@ -47,8 +47,24 @@ public class AttackRSA {
      */
     private static BigInteger recoverMessage(BigInteger[] N, BigInteger[] e,
                                              BigInteger[] c) {
-        // TODO Solve assignment.
-        return BigInteger.ZERO;
+
+        BigInteger m1 = N[1].multiply(N[2]);
+        BigInteger m2 = N[0].multiply(N[2]);
+        BigInteger m3 = N[0].multiply(N[1]);
+
+        BigInteger a1 = EEA.EEA(m1, N[0])[1].mod(N[0]);
+        BigInteger a2 = EEA.EEA(m2, N[1])[1].mod(N[1]);
+        BigInteger a3 = EEA.EEA(m3, N[2])[1].mod(N[2]);
+
+        BigInteger t1 = c[0].multiply(m1).multiply(a1);
+        BigInteger t2 = c[1].multiply(m2).multiply(a2);
+        BigInteger t3 = c[2].multiply(m3).multiply(a3);
+
+        BigInteger x = t1.add(t2.add(t3)).mod(N[0].multiply(N[1].multiply(N[2])));
+
+        x = CubeRoot.cbrt(x);
+
+        return x;
     }
 
 }
