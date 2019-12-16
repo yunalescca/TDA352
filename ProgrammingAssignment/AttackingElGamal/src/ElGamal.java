@@ -10,7 +10,7 @@ public class ElGamal {
     }
 
     public static void main(String[] arg) {
-        String filename = "/Users/lisa/Projects/Cryptography/TDA352/ProgrammingAssignment/AttackingElGamal/src/input.txt";
+        String filename = "input.txt";
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             BigInteger p = new BigInteger(br.readLine().split("=")[1]);
@@ -42,7 +42,32 @@ public class ElGamal {
     public static BigInteger recoverSecret(BigInteger p, BigInteger g,
                                            BigInteger y, int year, int month, int day, int hour, int minute,
                                            int second, BigInteger c1, BigInteger c2) {
-        return c1;
+
+        for(int i=0; i<1000; i++){
+            BigInteger r = createRandomNumber(year, month, day, hour, minute, second, i);
+            BigInteger tmpC = g.modPow(r, p);
+
+            if(tmpC.equals(c1)){
+                //now we know r :)
+                BigInteger k = y.modPow(r,p);
+                BigInteger m = ((k.modInverse(p)).multiply(c2)).mod(p);
+                return m;
+            }
+        }
+        return BigInteger.ZERO;
+    }
+
+    public static BigInteger createRandomNumber(int year, int month, int day, int hour, int minute,
+                                                int second, int millisecond){
+        BigInteger bigYear = BigInteger.valueOf(year).multiply(BigInteger.TEN.pow(10));
+        BigInteger bigMonth = BigInteger.valueOf(month).multiply(BigInteger.TEN.pow(8));
+        BigInteger bigDay = BigInteger.valueOf(day).multiply(BigInteger.TEN.pow(6));
+        BigInteger bigHour = BigInteger.valueOf(hour).multiply(BigInteger.TEN.pow(4));
+        BigInteger bigMinute = BigInteger.valueOf(minute).multiply(BigInteger.TEN.pow(2));
+        BigInteger bigSecond = BigInteger.valueOf(second);
+        BigInteger bigMillisecond = BigInteger.valueOf(millisecond);
+
+        return bigYear.add(bigMonth.add(bigDay.add(bigHour.add(bigMinute.add(bigSecond.add(bigMillisecond))))));
     }
 
 }
