@@ -7,7 +7,7 @@ import javax.xml.bind.DatatypeConverter;
 public class CBCXor {
 
     public static void main(String[] args) {
-        String filename = "/Users/josefinulfenborg/Documents/Chalmers/Cryptography/TDA352/ProgrammingAssignment/CBC/src/input.txt";
+        String filename = "input.txt";
         byte[] first_block = null;
         byte[] encrypted = null;
         try {
@@ -55,7 +55,6 @@ public class CBCXor {
                 decrypted[i * 12 + j] = (byte) (blocks[i][j] ^ k[j] ^ encrypted[(i - 1) * 12 + j]);
             }
         }
-
         return new String(decrypted);
     }
 }

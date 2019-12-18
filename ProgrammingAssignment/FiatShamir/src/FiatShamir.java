@@ -37,7 +37,6 @@ public class FiatShamir {
                         new BigInteger(elem[0].split("=")[1]),
                         Integer.parseInt(elem[1].split("=")[1]),
                         new BigInteger(elem[2].split("=")[1]));
-                System.out.println(runs[i] + "\n");
             }
             br.close();
         } catch (Exception err) {
